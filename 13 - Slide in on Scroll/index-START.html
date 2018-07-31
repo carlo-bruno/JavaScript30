@@ -58,12 +58,28 @@
       };
     }
 
+    const sliderImages = document.querySelectorAll('.slide-in');
+
+    function checkSlide(e) {
+      sliderImages.forEach(sliderImage => {
+        const imageHalf = (window.scrollY + window.innerHeight) - sliderImage.height / 2;
+        const imageBottom = sliderImage.offsetTop + sliderImage.height;
+        
+        const isHalfShown = imageHalf > sliderImage.offsetTop;
+        const isNotScrolledPast = window.scrollY < imageBottom;
+
+        if (isHalfShown && isNotScrolledPast)  sliderImage.classList.add('active');
+        else sliderImage.classList.remove('active');
+      });
+    }
+
+    window.addEventListener('scroll', debounce(checkSlide));
   </script>
 
   <style>
     html {
       box-sizing: border-box;
-      background:#ffc600;
+      background:#757575;
       font-family:'helvetica neue';
       font-size: 20px;
       font-weight: 200;
