@@ -22,13 +22,107 @@
     <form class="add-items">
       <input type="text" name="item" placeholder="Item Name" required>
       <input type="submit" value="+ Add Item">
+      <hr>
+      <div class="select-buttons">
+        <input type="button" class="select-all" value="Select All">
+        <input type="button" class="deselect-all" value="Deselect All">
+        <input type="button" class="delete-selected" value="Delete">
+      </div>
     </form>
   </div>
 
 <script>
   const addItems = document.querySelector('.add-items');
   const itemsList = document.querySelector('.plates');
-  const items = [];
+  const items = JSON.parse(localStorage.getItem('items')) || [];
+
+  const selectBtn = document.querySelector('.select-all');
+  const deselectBtn = document.querySelector('.deselect-all');
+  const deleteBtn = document.querySelector('.delete-selected');
+
+
+  function addItem(e) {
+    e.preventDefault();
+    const text = (this.querySelector('[name=item]')).value;
+    const item = {
+      text,
+      done: false
+    };
+
+    items.push(item);
+
+    populateList(items, itemsList);
+
+    // Local Storage
+    localStorage.setItem('items', JSON.stringify(items));
+    this.reset();
+  }
+
+  function populateList(plates = [], platesList){ // params: list of plates, where to render list
+    platesList.innerHTML = plates.map((plate, i) => {
+      return `
+        <li>
+          <input type="checkbox" data-index=${i} id="item${i}" ${plate.done ? 'checked' : ''} />
+          <label for="item${i}">${plate.text}</label>
+        </li>
+      `; // will return an HTML element,
+    }).join(''); // map will return an array, join it to a string
+  }
+
+  function toggleDone(e) {
+    if (!e.target.matches('input')) return;
+
+    const el = e.target;
+    const index = el.dataset.index;
+
+    items[index].done = !items[index].done;
+
+    localStorage.setItem('items', JSON.stringify(items));
+    populateList(items, itemsList);
+  }
+
+
+  function selectAll() {
+    items.forEach(item => {
+      if (!item.done) item.done = true;
+    });
+    localStorage.setItem('items', JSON.stringify(items));
+    populateList(items, itemsList);
+  }
+
+  function deselectAll() {
+    items.forEach(item => {
+      if (item.done) item.done = false;
+    });
+    localStorage.setItem('items', JSON.stringify(items));
+    populateList(items, itemsList);
+  }
+
+  function deleteSelected() {
+    // when using forEach, the iteration will skip the deleted index,
+    // thus leaving the next selected item
+    // solution, use for loop and decrease i by one after deletion
+    // https://coderwall.com/p/prvrnw/remove-items-from-array-while-iterating-over-it
+    
+    for (i = 0; i < items.length; i++) {
+      if (items[i].done) {
+        items.splice(i, 1);
+        i--;
+      }
+    };
+    localStorage.setItem('items', JSON.stringify(items));
+    populateList(items, itemsList);
+  }
+
+  addItems.addEventListener('submit', addItem);
+  itemsList.addEventListener('click', toggleDone);
+
+  selectBtn.addEventListener('click', selectAll);
+  deselectBtn.addEventListener('click', deselectAll);
+  deleteBtn.addEventListener('click', deleteSelected);
+
+  populateList(items, itemsList);
+
 
 </script>
 

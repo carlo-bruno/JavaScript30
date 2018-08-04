@@ -76,3 +76,17 @@
       outline:0;
       border:1px solid rgba(0,0,0,0.1);
     }
+
+    .select-buttons {
+      display: flex;
+    }
+
+    .select-buttons > * {
+      flex: 1;
+      margin: 0 1px;
+    }
+
+    .delete-selected {
+      background-color: rgba(255, 0, 0, 0.675);
+      color: #fff;
+    }
