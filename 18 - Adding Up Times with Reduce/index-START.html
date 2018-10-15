@@ -206,7 +206,7 @@
     secondsLeft = secondsLeft % 3600; // remainder from hours
 
     const minutes = Math.floor(secondsLeft / 60);
-    secondsLeft = secondsLeft % 60;
+    secondsLeft = secondsLeft % 60; // remainder from minutes
 
     console.log(hours, minutes, secondsLeft);
 
